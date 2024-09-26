@@ -1,0 +1,53 @@
+module testbench;
+wire [1:0] MAIN_SIG, CNTRY_SIG;
+reg X;
+  
+reg CLOCK, CLEAR;
+  
+sig_control DUT(MAIN_SIG, CNTRY_SIG, X, CLOCK, CLEAR);
+  
+  
+
+initial
+  begin
+  $dumpfile("dump.vcd");
+  $dumpvars(1 ,MAIN_SIG, CNTRY_SIG, X);
+$monitor($time, " Main Sig = %b Country Sig = %b Car_on_cntry = %b",
+MAIN_SIG, CNTRY_SIG, X);
+  end
+  
+
+initial
+begin
+CLOCK = `FALSE;
+forever #5 CLOCK = ~CLOCK;
+end
+  
+
+initial
+  begin
+CLEAR = `TRUE;
+repeat (5) @(negedge CLOCK);
+CLEAR = `FALSE;
+end
+  
+  
+
+initial
+begin
+  X = `FALSE;
+repeat(20)@(negedge CLOCK);
+  X = `TRUE;
+repeat(10)@(negedge CLOCK);
+  X = `FALSE;
+repeat(20)@(negedge CLOCK);
+  X = `TRUE;
+repeat(10)@(negedge CLOCK);
+  X = `FALSE;
+repeat(20)@(negedge CLOCK);
+  X = `TRUE;
+repeat(10)@(negedge CLOCK);
+  X= `FALSE;
+  repeat(10)@(negedge CLOCK); $finish;
+end
+endmodule
